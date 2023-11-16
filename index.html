@@ -18,11 +18,12 @@
     #webcam-container {
       position: relative;
       width: 100%;
-      max-width: 500px; /* Ограничиваем максимальную ширину для адаптивности */
+      max-width: 500px;
     }
 
     #webcam-container canvas {
       width: 100%;
+      border-radius: 10px; /* Закругленные углы */
     }
 
     #label-container {
@@ -44,9 +45,11 @@
 
     button {
       margin-top: 20px;
-      padding: 10px;
+      padding: 10px 20px;
       font-size: 16px;
       cursor: pointer;
+      border: none;
+      border-radius: 20px; /* Закругленные углы */
     }
   </style>
 </head>
@@ -105,7 +108,6 @@
         }
       }
 
-      // Отобразить только метку с наивысшей вероятностью
       labelContainer.childNodes.forEach((label, index) => {
         label.classList.toggle('active', index === maxIndex);
       });
