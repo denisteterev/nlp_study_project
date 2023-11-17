@@ -3,15 +3,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teachable Machine Image Model.js</title>
   <style>
-    body {
-      background-color: #0C101E;
+   body {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
+      background: linear-gradient(45deg, #0f2027, #203a43, #2c5364); /* Градиент от темно-синего к светло-синему и обратно */
+  background-size: 400% 400%; /* Увеличение размера фона для создания эффекта перелива */
+  animation: gradientAnimation 10s ease infinite; /* Длительность 10 секунд, смягчение и бесконечное повторение */
     }
 
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
     canvas {
       border: 2px solid #2F4F4F; /* Зеленый цвет рамки (можете изменить по своему вкусу) */
       border-radius: 10px; /* Закругленные углы */
