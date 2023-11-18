@@ -1,102 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teachable Machine Image Model.js</title>
+  <title>Биометрическая система разграничения доступа</title>
   <style>
-   body {
+    body {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      background: linear-gradient(45deg, #0f2027, #203a43, #2c5364); /* Градиент от темно-синего к светло-синему и обратно */
-  background-size: 400% 400%; /* Увеличение размера фона для создания эффекта перелива */
-  animation: gradientAnimation 10s ease infinite; /* Длительность 10 секунд, смягчение и бесконечное повторение */
+      background: linear-gradient(45deg, #0f2027, #203a43, #2c5364);
+      background-size: 400% 400%;
+      animation: gradientAnimation 10s ease infinite;
     }
 
-@keyframes gradientAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
     canvas {
-      border: 2px solid #2F4F4F; /* Зеленый цвет рамки (можете изменить по своему вкусу) */
-      border-radius: 10px; /* Закругленные углы */
+      border: 2px solid #2F4F4F;
+      border-radius: 10px;
+    }
+
+    #access-message {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 25px;
+      color: #fff;
+      display: none;
     }
   </style>
 </head>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/p5@latest/lib/p5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p5@latest/lib/addons/p5.dom.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/ml5@latest/dist/ml5.min.js"></script>
-<script type="text/javascript">
-  // Classifier Variable
-  let classifier;
-  // Model URL
-  let imageModelURL = 'https://teachablemachine.withgoogle.com/models/4QEhlKk3F/';
-  
-  // Video
-  let video;
-  let flippedVideo;
-  // To store the classification
-  let label = "";
+  <div id="access-message">Доступ запрещен</div>
+  <script src="https://cdn.jsdelivr.net/npm/p5@latest/lib/p5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@latest/lib/addons/p5.dom.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ml5@latest/dist/ml5.min.js"></script>
+  <script type="text/javascript">
+    // Classifier Variable
+    let classifier;
+    // Model URL
+    let imageModelURL = 'https://teachablemachine.withgoogle.com/models/4QEhlKk3F/';
+    
+    // Video
+    let video;
+    let flippedVideo;
+    // To store the classification
+    let label = "";
 
-  // Load the model first
-  function preload() {
-    classifier = ml5.imageClassifier(imageModelURL + 'model.json');
-  }
-
-  function setup() {
-    createCanvas(640, 480);
-    // Create the video
-    video = createCapture(VIDEO);
-    video.size(640, 480);
-    video.hide();
-
-    flippedVideo = ml5.flipImage(video);
-    // Start classifying
-    classifyVideo();
-  }
-
-  function draw() {
-    background(0);
-    // Draw the video
-    image(flippedVideo, 0, 0);
-
-    // Draw the label
-    fill(255);
-    textSize(27);
-    textAlign(CENTER);
-    text(label, width / 2, height - 6);
-  }
-
-  // Get a prediction for the current video frame
-  function classifyVideo() {
-    flippedVideo = ml5.flipImage(video)
-    classifier.classify(flippedVideo, gotResult);
-    flippedVideo.remove();
-
-  }
-
-  // When we get a result
-  function gotResult(error, results) {
-    // If there is an error
-    if (error) {
-      console.error(error);
-      return;
+    // Load the model first
+    function preload() {
+      classifier = ml5.imageClassifier(imageModelURL + 'model.json');
     }
-    // The results are in an array ordered by confidence.
-    // console.log(results[0]);
-    label = results[0].label;
-    // Classifiy again!
-    classifyVideo();
-  }
-</script>
-  </body>
+
+    function setup() {
+      createCanvas(640, 480);
+      // Create the video
+      video = createCapture(VIDEO);
+      video.size(640, 480);
+      video.hide();
+
+      flippedVideo = ml5.flipImage(video);
+      // Start classifying
+      classifyVideo();
+    }
+
+    function draw() {
+      background(0);
+      // Draw the video
+      image(flippedVideo, 0, 0);
+
+      // Draw the label
+      fill(255);
+      textSize(27);
+      textAlign(CENTER);
+      text(label, width / 2, height - 6);
+
+      // Show/hide access message based on label
+      const accessMessage = document.getElementById('access-message');
+      if (label === 'Denis' || label === 'Dima') {
+        accessMessage.textContent = 'Доступ разрешен ✅';
+        accessMessage.style.display = 'block';
+      } else {
+        accessMessage.textContent = 'Доступ запрещен ❌';
+        accessMessage.style.display = 'block';
+      }
+    }
+
+    // Get a prediction for the current video frame
+    function classifyVideo() {
+      flippedVideo = ml5.flipImage(video);
+      classifier.classify(flippedVideo, gotResult);
+      flippedVideo.remove();
+    }
+
+    // When we get a result
+    function gotResult(error, results) {
+      // If there is an error
+      if (error) {
+        console.error(error);
+        return;
+      }
+      // The results are in an array ordered by confidence.
+      // console.log(results[0]);
+      label = results[0].label;
+      // Classify again!
+      classifyVideo();
+    }
+  </script>
+</body>
 </html>
